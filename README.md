@@ -71,25 +71,6 @@ Prebuilt `linux/amd64` binaries are attached to each
     └── go.sum
 ```
 
-## CI / packaging
-
-### GitHub Actions
-- **CI** (`.github/workflows/ci.yml`) – runs `go vet`, `go test -race`, and a build
-  on every push/PR to `main`.
-- **Release** (`.github/workflows/release.yml`) – on a pushed `v*` tag (or manual
-  dispatch), builds the static `linux/amd64` binary and attaches it to the matching
-  GitHub Release.
-
-### GitLab CI
-`.gitlab-ci.yml` defines two stages:
-
-1. **build** – compiles a static `linux/amd64` binary and publishes it as an artifact.
-2. **deploy-prd** – on tags ending in `-prd`, wraps the binary in a Debian package
-   (via `ci/deb.sh`, which also generates a systemd service unit) and copies it to
-   the production Debian repo host over SSH.
-
-The generated systemd unit runs the service from `/becreator/tronscan-exporter`.
-
 ## License
 
 Released under the [MIT License](LICENSE).
