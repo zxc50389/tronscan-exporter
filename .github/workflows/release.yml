@@ -34,6 +34,13 @@ jobs:
           CGO_ENABLED=0 GOOS=linux GOARCH=amd64 \
             go build -trimpath -ldflags "-s -w" -o tronscan-exporter-linux-amd64 .
 
+      - name: Compress binary with UPX
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq upx-ucl
+          upx --best --lzma src/tronscan-exporter-linux-amd64
+          ls -la src/tronscan-exporter-linux-amd64
+
       - name: Resolve release tag
         id: tag
         run: echo "name=${{ github.event.inputs.tag || github.ref_name }}" >> "$GITHUB_OUTPUT"
@@ -49,7 +56,7 @@ jobs:
           else
             gh release create "$TAG" src/tronscan-exporter-linux-amd64 \
               --title "$TAG" \
-              --notes "TRON Prometheus exporter — automated build for $TAG. Exposes tron_current_tps, tron_max_tps and tron_blockHeight on :8091/metrics." \
+              --notes "TRON Prometheus exporter — automated build for $TAG. Exposes tron_current_tps, tron_max_tps, tron_block_height and tron_up on :8091/metrics. Binary is UPX-compressed." \
               --target main \
               --repo "$GITHUB_REPOSITORY"
           fi
