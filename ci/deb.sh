@@ -18,8 +18,8 @@ After=network-online.target
 
 [Service]
 Type=simple
-WorkingDirectory=/becreator/${SERVICENAME}
-ExecStart=/becreator/${SERVICENAME}/${SERVICENAME}
+WorkingDirectory=/etc/${SERVICENAME}
+ExecStart=/etc/${SERVICENAME}/${SERVICENAME}
 ExecStop=/usr/bin/pkill ${SERVICENAME}
 Restart=on-failure
 RestartSec=5

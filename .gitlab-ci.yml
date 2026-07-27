@@ -48,8 +48,8 @@ deploy-prd:
         - ls -al
         - VERSION="$(echo $CI_COMMIT_TAG | grep -P '\d+.\d+.\d+.\d+' -o)"
         - export VERSION
-        - mkdir -p ./ci/deb/becreator/${SERVICENAME}
-        - cp -Rf ./src/${SERVICENAME} ./ci/deb/becreator/${SERVICENAME}/${SERVICENAME}
+        - mkdir -p ./ci/deb/etc/${SERVICENAME}
+        - cp -Rf ./src/${SERVICENAME} ./ci/deb/etc/${SERVICENAME}/${SERVICENAME}
         - ls -al ./ci/deb
         - chmod 755 ./ci/deb.sh
         - ./ci/deb.sh
