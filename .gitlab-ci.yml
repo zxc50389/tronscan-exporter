@@ -1,6 +1,5 @@
 variables:
     SERVICENAME: "tronscan-exporter"
-    PRD_SERVICE_ENTRYPOINT: "${SERVICENAME}"
 
 .deploy-prd:
     rules:
@@ -52,7 +51,6 @@ deploy-prd:
         - mkdir -p ./ci/deb/becreator/${SERVICENAME}
         - cp -Rf ./src/${SERVICENAME} ./ci/deb/becreator/${SERVICENAME}/${SERVICENAME}
         - ls -al ./ci/deb
-        - sed -i "21iExecStart=/becreator/${SERVICENAME}/${PRD_SERVICE_ENTRYPOINT}" ./ci/deb.sh
         - chmod 755 ./ci/deb.sh
         - ./ci/deb.sh
         - mv ./ci/${SERVICENAME}.deb ./${SERVICENAME}-${VERSION}-production.deb
