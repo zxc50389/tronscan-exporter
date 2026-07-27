@@ -1,0 +1,3 @@
+# Keep shell scripts and Debian control files LF so they stay executable on Linux.
+*.sh            text eol=lf
+ci/deb/DEBIAN/* text eol=lf
