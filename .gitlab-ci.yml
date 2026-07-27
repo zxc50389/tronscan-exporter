@@ -1,0 +1,64 @@
+variables:
+    SERVICENAME: "tronscan-exporter"
+    PRD_SERVICE_ENTRYPOINT: "${SERVICENAME}"
+
+.deploy-prd:
+    rules:
+        - if: '$CI_COMMIT_TAG =~ /-prd$/'
+
+stages:
+  - build
+  - deploy
+
+build:
+    image: golang:1.20-alpine
+    stage: build
+    before_script:
+        - ls -al
+        - chmod 755 ./ci/files.sh
+        - ./ci/files.sh
+    script:
+        - echo ${CI_PROJECT_NAME}
+        - echo ${CI_COMMIT_TAG}
+        - echo ${CI_BUILD_TAG}
+        - echo $VERSION
+        - export
+        - go env -w GOSUMDB=off
+        - cd ./src
+        - go mod tidy
+        - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o "${SERVICENAME}"
+        - ls
+    artifacts:
+        paths:
+            - ./src/${SERVICENAME}
+        expire_in: 30 mins
+
+deploy-prd:
+    extends: .deploy-prd
+    image: ubuntu:latest
+    stage: deploy
+    before_script:
+        - apt-get update
+        - apt-get -y install openssh-client
+        - eval $(ssh-agent -s)
+        - echo "$DEBrepo_SSH_KEY" | tr -d '\r' | ssh-add -
+        - mkdir -p ~/.ssh
+        - chmod 700 ~/.ssh
+        - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+    script:
+        - ls -al
+        - VERSION="$(echo $CI_COMMIT_TAG | grep -P '\d+.\d+.\d+.\d+' -o)"
+        - export VERSION
+        - mkdir -p ./ci/deb/becreator/${SERVICENAME}
+        - cp -Rf ./src/${SERVICENAME} ./ci/deb/becreator/${SERVICENAME}/${SERVICENAME}
+        - ls -al ./ci/deb
+        - sed -i "21iExecStart=/becreator/${SERVICENAME}/${PRD_SERVICE_ENTRYPOINT}" ./ci/deb.sh
+        - chmod 755 ./ci/deb.sh
+        - ./ci/deb.sh
+        - mv ./ci/${SERVICENAME}.deb ./${SERVICENAME}-${VERSION}-production.deb
+        - ls -al
+        - scp ./${SERVICENAME}-${VERSION}-production.deb ubuntu@172.30.1.220:/home/ubuntu/deb/
+    artifacts:
+        paths:
+            - ./*-production.deb
+        expire_in: 30 mins
