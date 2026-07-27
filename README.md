@@ -51,8 +51,14 @@ CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o tronscan-exporter
 ./tronscan-exporter -scrape.interval=15s
 ```
 
-Prebuilt `linux/amd64` binaries are attached to each
-[GitHub Release](https://github.com/zxc50389/tronscan-exporter/releases).
+Each [GitHub Release](https://github.com/zxc50389/tronscan-exporter/releases)
+attaches a prebuilt `linux/amd64` binary and a Debian package. To install via
+the `.deb` (registers and starts a `systemd` service):
+
+```sh
+sudo dpkg -i tronscan-exporter_<version>_amd64.deb
+systemctl status tronscan-exporter
+```
 
 ## Repository layout
 

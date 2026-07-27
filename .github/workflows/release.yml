@@ -45,18 +45,36 @@ jobs:
         id: tag
         run: echo "name=${{ github.event.inputs.tag || github.ref_name }}" >> "$GITHUB_OUTPUT"
 
-      - name: Publish release with binary
+      - name: Build .deb package
+        id: deb
+        env:
+          SERVICENAME: tronscan-exporter
+          TAG: ${{ steps.tag.outputs.name }}
+        run: |
+          VERSION="${TAG#v}"
+          export SERVICENAME VERSION
+          mkdir -p "ci/deb/becreator/${SERVICENAME}"
+          cp src/tronscan-exporter-linux-amd64 "ci/deb/becreator/${SERVICENAME}/${SERVICENAME}"
+          chmod 755 "ci/deb/becreator/${SERVICENAME}/${SERVICENAME}" ci/deb.sh
+          ./ci/deb.sh
+          DEB="${SERVICENAME}_${VERSION}_amd64.deb"
+          mv "ci/${SERVICENAME}.deb" "$DEB"
+          echo "path=$DEB" >> "$GITHUB_OUTPUT"
+          dpkg-deb -I "$DEB"
+
+      - name: Publish release with binary and .deb
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ steps.tag.outputs.name }}
+          DEB: ${{ steps.deb.outputs.path }}
         run: |
           if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            gh release upload "$TAG" src/tronscan-exporter-linux-amd64 \
+            gh release upload "$TAG" src/tronscan-exporter-linux-amd64 "$DEB" \
               --clobber --repo "$GITHUB_REPOSITORY"
           else
-            gh release create "$TAG" src/tronscan-exporter-linux-amd64 \
+            gh release create "$TAG" src/tronscan-exporter-linux-amd64 "$DEB" \
               --title "$TAG" \
-              --notes "TRON Prometheus exporter — automated build for $TAG. Exposes tron_current_tps, tron_max_tps, tron_block_height and tron_up on :8091/metrics. Binary is UPX-compressed." \
+              --notes "TRON Prometheus exporter — automated build for $TAG. Exposes tron_current_tps, tron_max_tps, tron_block_height and tron_up on :8091/metrics. Assets: UPX-compressed linux/amd64 binary and a Debian package (installs a systemd service running from /becreator/tronscan-exporter)." \
               --target main \
               --repo "$GITHUB_REPOSITORY"
           fi
