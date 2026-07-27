@@ -11,3 +11,7 @@
 
 # Go
 vendor/
+
+# Local build output
+/dist/
+/src/tronscan-exporter-linux-amd64
