@@ -1,0 +1,13 @@
+# Compiled binaries / build output
+/src/tronscan-exporter
+/tron_exporter/tron_exporter
+*.exe
+*.deb
+
+# CI working dirs
+/ci/workdir/
+/ci/deb/becreator/
+/ci/deb/etc/
+
+# Go
+vendor/

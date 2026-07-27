@@ -1,0 +1,6 @@
+#!/bin/bash
+
+systemctl daemon-reload
+systemctl enable $SERVICENAME.service
+systemctl start $SERVICENAME.service
+echo 'done'

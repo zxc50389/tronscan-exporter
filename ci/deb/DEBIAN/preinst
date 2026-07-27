@@ -1,0 +1,10 @@
+#!/bin/bash
+
+#=========== Additional Script==================
+#...
+#===============================================
+
+systemctl daemon-reload
+systemctl stop $SERVICENAME.service
+systemctl disable $SERVICENAME.service
+echo 'done'

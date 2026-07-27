@@ -1,0 +1,18 @@
+#!/bin/bash
+
+#=========== Additional Script==================
+main_path=/becreator/
+main_service=appserver
+main=$main_path$main_service
+baklog=$main"_baklog_"$(date +"%Y%m%d-%H%M%S")
+if [ -d "$main" ]; then
+  mkdir -p $baklog
+  mv $main/*.log* $baklog/.
+  rm -rf $main
+fi
+#===============================================
+
+systemctl stop $SERVICENAME.service
+systemctl disable $SERVICENAME.service
+systemctl daemon-reload
+echo 'done'
