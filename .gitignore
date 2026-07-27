@@ -1,6 +1,5 @@
 # Compiled binaries / build output
 /src/tronscan-exporter
-/tron_exporter/tron_exporter
 *.exe
 *.deb
 

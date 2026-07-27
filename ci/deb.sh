@@ -18,6 +18,7 @@ After=network-online.target
 
 [Service]
 WorkingDirectory=/becreator/${SERVICENAME}
+ExecStart=/becreator/${SERVICENAME}/${SERVICENAME}
 ExecStop=/usr/bin/pkill ${SERVICENAME}
 
 [Install]
