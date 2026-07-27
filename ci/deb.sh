@@ -17,9 +17,12 @@ Description=${SERVICENAME}
 After=network-online.target
 
 [Service]
+Type=simple
 WorkingDirectory=/becreator/${SERVICENAME}
 ExecStart=/becreator/${SERVICENAME}/${SERVICENAME}
 ExecStop=/usr/bin/pkill ${SERVICENAME}
+Restart=on-failure
+RestartSec=5
 
 [Install]
 WantedBy=multi-user.target
