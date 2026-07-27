@@ -5,7 +5,6 @@
 
 # CI working dirs
 /ci/workdir/
-/ci/deb/becreator/
 /ci/deb/etc/
 
 # Go

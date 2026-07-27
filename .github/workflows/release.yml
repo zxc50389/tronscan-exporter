@@ -53,9 +53,9 @@ jobs:
         run: |
           VERSION="${TAG#v}"
           export SERVICENAME VERSION
-          mkdir -p "ci/deb/becreator/${SERVICENAME}"
-          cp src/tronscan-exporter-linux-amd64 "ci/deb/becreator/${SERVICENAME}/${SERVICENAME}"
-          chmod 755 "ci/deb/becreator/${SERVICENAME}/${SERVICENAME}" ci/deb.sh
+          mkdir -p "ci/deb/etc/${SERVICENAME}"
+          cp src/tronscan-exporter-linux-amd64 "ci/deb/etc/${SERVICENAME}/${SERVICENAME}"
+          chmod 755 "ci/deb/etc/${SERVICENAME}/${SERVICENAME}" ci/deb.sh
           ./ci/deb.sh
           DEB="${SERVICENAME}_${VERSION}_amd64.deb"
           mv "ci/${SERVICENAME}.deb" "$DEB"
@@ -74,7 +74,7 @@ jobs:
           else
             gh release create "$TAG" src/tronscan-exporter-linux-amd64 "$DEB" \
               --title "$TAG" \
-              --notes "TRON Prometheus exporter — automated build for $TAG. Exposes tron_current_tps, tron_max_tps, tron_block_height and tron_up on :8091/metrics. Assets: UPX-compressed linux/amd64 binary and a Debian package (installs a systemd service running from /becreator/tronscan-exporter)." \
+              --notes "TRON Prometheus exporter — automated build for $TAG. Exposes tron_current_tps, tron_max_tps, tron_block_height and tron_up on :8091/metrics. Assets: UPX-compressed linux/amd64 binary and a Debian package (installs a systemd service running from /etc/tronscan-exporter)." \
               --target main \
               --repo "$GITHUB_REPOSITORY"
           fi
