@@ -4,7 +4,11 @@
 #...
 #===============================================
 
-systemctl daemon-reload
-systemctl stop $SERVICENAME.service
-systemctl disable $SERVICENAME.service
+# dpkg passes "upgrade" when replacing an existing version and "install" on a
+# fresh install. Only stop/disable the old service on upgrade; on a fresh
+# install there is nothing to stop, so skip it to avoid spurious errors.
+if [ "$1" = "upgrade" ]; then
+  systemctl stop "$SERVICENAME.service" || true
+  systemctl disable "$SERVICENAME.service" || true
+fi
 echo 'done'
